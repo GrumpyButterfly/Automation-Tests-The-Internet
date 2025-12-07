@@ -1,4 +1,5 @@
 ﻿using Microsoft.Playwright;
+using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,14 +45,34 @@ namespace AutomationTestsTheInternet.Utilities
         {
             await _page.CloseAsync();
 
+            if(TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+            {
+                await _page.ScreenshotAsync(new PageScreenshotOptions
+                {
+                    Path = $"screenshot-{MakeSafeFileName(TestContext.CurrentContext.Test.Name)}-{DateTime.Now:yyyyMMddHHmmss}.png"
+                });
+            }
+
             await _context.Tracing.StopAsync(new TracingStopOptions
             {
-                Path = $"trace-{TestContext.CurrentContext.Test.Name}-{DateTime.Now:yyyyMMddHHmmss}.zip"
+                Path = $"trace-{MakeSafeFileName(TestContext.CurrentContext.Test.Name)}-{DateTime.Now:yyyyMMddHHmmss}.zip"
             });
 
             await _context.CloseAsync();
             await _browser.CloseAsync();
             _playwright.Dispose();
+        }
+
+        // sanitize test name and ensure directory exists before writing trace/screenshot
+        private static string MakeSafeFileName(string name)
+        {
+            var invalid = System.IO.Path.GetInvalidFileNameChars();
+            var safe = new System.Text.StringBuilder(name.Length);
+            foreach (var c in name)
+            {
+                safe.Append(Array.IndexOf(invalid, c) >= 0 ? '_' : c);
+            }
+            return safe.ToString();
         }
     }
 }
