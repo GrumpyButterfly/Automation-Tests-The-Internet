@@ -11,14 +11,17 @@ namespace AutomationTestsTheInternet.Utilities
         protected IBrowser _browser;
         protected IBrowserContext _context;
         protected IPage _page;
+        protected string _baseURL = "https://the-internet.herokuapp.com/";
 
         [SetUp]
         public async Task SetUp()
         {
             _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            _browser = await _playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = false
+                Headless = true,
+                Channel = "firefox",
+                SlowMo = 50
             });
             _context = await _browser.NewContextAsync(new BrowserNewContextOptions
             {

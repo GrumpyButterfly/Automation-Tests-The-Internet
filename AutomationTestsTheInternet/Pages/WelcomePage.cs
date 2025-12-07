@@ -54,26 +54,22 @@ namespace AutomationTestsTheInternet.Pages
             return visibleList;
         }
 
-        public async Task<bool> IsLinkVisibleAsync(string linkText)
-        {
-            var linkLocator = _allExampleLinks.Filter(new() { HasTextString = linkText });
-            return await linkLocator.IsVisibleAsync();
-        }
-
         public async Task ClickExampleLinkAsync(string linkText)
         {
             var linkLocator = _allExampleLinks.Filter(new() { HasTextString = linkText });
-            await linkLocator.ClickAsync();
+            if (await linkLocator.CountAsync() == 0)
+            {
+                throw new Exception($"Link with text '{linkText}' not found on the Welcome Page.");
+            } else if (linkLocator.CountAsync().Result > 1)
+            {
+                linkLocator = linkLocator.Nth(0);
+            }
+                await linkLocator.ClickAsync();
         }
 
         public async Task ClickForkMeOnGitHubAsync()
         {
             await _forkMeOnGitHub.ClickAsync();
-        }
-
-        public async Task<string> GetPoweredByElementalSeleniumTextAsync()
-        {
-            return await _poweredByElementalSelenium.InnerTextAsync();
         }
 
         public async Task<bool> IsPoweredByElementalSeleniumVisibleAsync()
