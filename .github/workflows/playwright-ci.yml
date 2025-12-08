@@ -1,0 +1,67 @@
+name: Playwright Tests (C#)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    runs-on: windows-latest  # For a list of available runner types, refer to
+                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: AutomationTestsTheInternet.slnx   
+      Test_Project_Path: AutomationTestsTheInternet\AutomationTestsTheInternet.csproj    
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 10.0.x
+
+    # Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore
+
+    # Build release
+    - name: Build
+      run: dotnet build --configuration Release
+
+    # Install Playwright Browsers
+    - name: Install Playwright Browsers
+      run: pwsh bin/Debug/net10.0/playwright.ps1 install --with-deps
+
+    # Execute all tests in the solution
+    - name: Execute tests
+      run: dotnet test --configuration Release \
+            --logger "trx;LogfileName=test-results.trx" \
+            --results-directory "TestResults" \
+            --verbosity normal
+      env:
+        PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
+
+    # Upload Artifacts
+    - name: Upload Artifacts (reports + traces)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-${{ matrix.browser }}-artifacts
+        path: |
+          TestResults
+          playwright-report
+          test-results.trx
