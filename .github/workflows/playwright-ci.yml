@@ -42,9 +42,15 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release
 
-    # Install Playwright Browsers
+    #Setup Node.js
+    - name: Setup Node.js (for Playwright CLI)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    # Install Playwright Browsers (npx)
     - name: Install Playwright Browsers
-      run: pwsh bin/Debug/net10.0/playwright.ps1 install --with-deps
+      run: npx playwright install --with-deps
 
     # Execute all tests in the solution
     - name: Execute tests
