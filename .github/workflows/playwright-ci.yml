@@ -57,7 +57,7 @@ jobs:
       run: >
         dotnet test $(find . -name "*.csproj" | head -n 1) 
         --configuration Release
-        --logger trx;LogfileName=test-results.trx
+        --logger "trx;LogfileName=test-results.trx"
         --results-directory TestResults
       env:
         PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
