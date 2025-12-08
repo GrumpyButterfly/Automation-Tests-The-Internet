@@ -36,11 +36,6 @@ namespace AutomationTestsTheInternet.Pages
             return await _allExampleLinks.CountAsync();
         }
 
-        public async Task<bool> IsForkMeOnGitHubVisible()
-        {
-            return await _forkMeOnGitHub.IsVisibleAsync();
-        }
-
         public async Task<IReadOnlyList<bool>> GetExampleLinkVisibilitiesAsync()
         {
             int count = GetAllExampleLinksCount().Result;
@@ -65,6 +60,11 @@ namespace AutomationTestsTheInternet.Pages
                 linkLocator = linkLocator.Nth(0);
             }
                 await linkLocator.ClickAsync();
+        }
+
+        public async Task<bool> IsForkMeOnGitHubVisible()
+        {
+            return await _forkMeOnGitHub.IsVisibleAsync();
         }
 
         public async Task ClickForkMeOnGitHubAsync()
