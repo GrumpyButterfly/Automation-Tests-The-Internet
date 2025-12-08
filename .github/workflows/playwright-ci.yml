@@ -54,7 +54,8 @@ jobs:
 
     # Execute all tests in the solution
     - name: Execute tests
-      run: dotnet test --configuration Release \
+      run: dotnet test ./AutomationTestsTheInternet/AutomationTestsTheInternet.csproj \
+            --configuration Release \
             --logger "trx;LogfileName=test-results.trx" \
             --results-directory "TestResults" \
             --verbosity normal
