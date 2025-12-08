@@ -54,7 +54,7 @@ jobs:
 
     # Execute all tests in the solution
     - name: Execute tests
-      run: dotnet test ./AutomationTestsTheInternet/AutomationTestsTheInternet.csproj \
+      run: dotnet test AutomationTestsTheInternet/AutomationTestsTheInternet.csproj \
             --configuration Release \
             --logger "trx;LogfileName=test-results.trx" \
             --results-directory "TestResults" \
