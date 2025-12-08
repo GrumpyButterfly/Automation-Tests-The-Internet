@@ -54,12 +54,11 @@ jobs:
 
     # Execute all tests in the solution
     - name: Execute tests
-      run: |
-        TEST_PROJECT=$(find . -name "*.csproj" | head -n 1)
-        echo "Running tests in: $"TEST_PROJECT"
-        dotnet test $"TEST_PROJECT" --configuration Release \
-            --logger "trx;LogfileName=test-results.trx" \
-            --results-directory TestResults
+      run: >
+        dotnet test $(find . -name "*.csproj" | head -n 1) 
+        --configuration Release
+        --logger trx;LogfileName=test-results.trx
+        --results-directory TestResults
       env:
         PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
 
